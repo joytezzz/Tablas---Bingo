@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5795362795674987"
+     crossorigin="anonymous"></script>
+    <title>Generador de Tablas de Bingo</title>
+    <style>
+        .marcada {
+            background-color: yellow; /* Cambia el color de fondo según tu preferencia */
+        }
+
+        .tabla-container {
+            float: left; /* Colocar las tablas a la izquierda */
+            margin: 10px;
+        }
+
+        .tabla-container table {
+            margin-right: 10px; /* Espacio entre las tablas */
+        }
+
+        .tabla-container input[type="text"] {
+            width: 30px; /* Tamaño de los input */
+            text-align: center; /* Centrar el contenido */
+        }
+
+        .numero-tabla-input {
+            width: 100px; /* Ancho del input para el número de tabla (ajustar según tus necesidades) */
+        }
+    </style>
+</head>
+<body>
+    <h1>Tablas de Bingo</h1>
+    <div>
+        <input id="numeroSalido" type="text" placeholder="Número Salido">
+        <button id="marcarNumero">Marcar</button>
+    </div>
+    <button id="agregarTabla">Agregar Tabla</button>
+    <button id="quitarTabla">Quitar Tabla</button>
+    <div id="tablas">
+    </div>
+
+    <script>
+        var tablaId = 1;
+
+        function generarTablaBingo() {
+            var tabla = document.createElement("table");
+            tabla.id = "tabla" + tablaId;
+
+            // Agregar campo de entrada para el número de tabla
+            var tablaNumeroInput = document.createElement("input");
+            tablaNumeroInput.type = "text";
+            tablaNumeroInput.placeholder = "Número de Tabla";
+            tablaNumeroInput.classList.add("numero-tabla-input");
+            tabla.appendChild(tablaNumeroInput);
+
+            for (var i = 0; i < 5; i++) {
+                var fila = document.createElement("tr");
+                for (var j = 0; j < 5; j++) {
+                    var celda = document.createElement("td");
+                    var input = document.createElement("input");
+                    input.type = "text";
+                    input.placeholder = "Número";
+                    celda.appendChild(input);
+                    fila.appendChild(celda);
+                }
+                tabla.appendChild(fila);
+            }
+
+            var tablasDiv = document.getElementById("tablas");
+            var tablaContainer = document.createElement("div");
+            tablaContainer.classList.add("tabla-container");
+            tablaContainer.appendChild(tabla);
+            tablasDiv.appendChild(tablaContainer);
+            tablaId++;
+        }
+        function quitarTablaBingo() {
+            var tablasContainer = document.querySelectorAll(".tabla-container");
+            if (tablasContainer.length > 1) {
+                var tablasDiv = document.getElementById("tablas");
+                var lastTablaContainer = tablasContainer[tablasContainer.length - 1];
+                tablasDiv.removeChild(lastTablaContainer);
+                tablaId--;
+            }
+        }
+
+        // Marcar el número que sale
+        document.getElementById("marcarNumero").addEventListener("click", function() {
+            var numeroSalido = document.getElementById("numeroSalido").value;
+            marcarNumeroEnTablas(numeroSalido);
+        });
+
+        function marcarNumeroEnTablas(numero) {
+            var tablas = document.querySelectorAll(".tabla-container table");
+
+            for (var i = 0; i < tablas.length; i++) {
+                var celdas = tablas[i].querySelectorAll("input[type='text']");
+
+                for (var j = 0; j < celdas.length; j++) {
+                    if (celdas[j].value === numero) {
+                        celdas[j].classList.add("marcada");
+                    }
+                }
+            }
+        }
+
+        document.getElementById("agregarTabla").addEventListener("click", generarTablaBingo);
+        document.getElementById("quitarTabla").addEventListener("click", quitarTablaBingo);
+    </script>
+</body>
+</html>
