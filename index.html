@@ -1,41 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5795362795674987"
-     crossorigin="anonymous"></script>
     <title>Generador de Tablas de Bingo</title>
     <style>
         .marcada {
-            background-color: yellow; /* Cambia el color de fondo según tu preferencia */
+            background-color: yellow;
+        }
+
+        body {
+            background-color: #d3d3f3;
         }
 
         .tabla-container {
-            float: left; /* Colocar las tablas a la izquierda */
+            float: left;
             margin: 10px;
         }
 
         .tabla-container table {
-            margin-right: 10px; /* Espacio entre las tablas */
+            margin-right: 10px;
         }
 
-        .tabla-container input[type="text"] {
-            width: 30px; /* Tamaño de los input */
-            text-align: center; /* Centrar el contenido */
+        .tabla-container table input[type="text"] {
+            width: 60px;
+            text-align: center;
         }
 
         .numero-tabla-input {
-            width: 100px; /* Ancho del input para el número de tabla (ajustar según tus necesidades) */
+            width: 200px;
+        }
+
+        .tabla-container table th {
+            text-align: center;
+            width: 60px;
+        }
+
+        .tabla-container table tr td:first-child {
+            margin-right: 0;
+        }
+
+        .contenido-superior {
+            text-align: center;
+            padding: 20px;
         }
     </style>
 </head>
 <body>
-    <h1>Tablas de Bingo</h1>
-    <div>
-        <input id="numeroSalido" type="text" placeholder="Número Salido">
-        <button id="marcarNumero">Marcar</button>
+    <div class="contenido-superior">
+        <h1>Tablas de Bingo</h1>
+        <div>
+            <input id="numeroSalido" type="text" placeholder="Número Salido">
+            <button id="marcarNumero">Marcar</button>
+        </div>
+        <button id="agregarTabla">Agregar Tabla</button>
+        <button id="quitarTabla">Quitar Tabla</button>
     </div>
-    <button id="agregarTabla">Agregar Tabla</button>
-    <button id="quitarTabla">Quitar Tabla</button>
     <div id="tablas">
     </div>
 
@@ -46,12 +64,16 @@
             var tabla = document.createElement("table");
             tabla.id = "tabla" + tablaId;
 
-            // Agregar campo de entrada para el número de tabla
-            var tablaNumeroInput = document.createElement("input");
-            tablaNumeroInput.type = "text";
-            tablaNumeroInput.placeholder = "Número de Tabla";
-            tablaNumeroInput.classList.add("numero-tabla-input");
-            tabla.appendChild(tablaNumeroInput);
+            var letras = ["B", "I", "N", "G", "O"];
+
+            var filaLetras = document.createElement("tr");
+            for (var i = 0; i < 5; i++) {
+                var celdaLetra = document.createElement("th");
+                celdaLetra.textContent = letras[i];
+                celdaLetra.classList.add("ancho-superior");
+                filaLetras.appendChild(celdaLetra);
+            }
+            tabla.appendChild(filaLetras);
 
             for (var i = 0; i < 5; i++) {
                 var fila = document.createElement("tr");
@@ -60,6 +82,7 @@
                     var input = document.createElement("input");
                     input.type = "text";
                     input.placeholder = "Número";
+                    input.style.width = "60px";
                     celda.appendChild(input);
                     fila.appendChild(celda);
                 }
@@ -71,8 +94,10 @@
             tablaContainer.classList.add("tabla-container");
             tablaContainer.appendChild(tabla);
             tablasDiv.appendChild(tablaContainer);
+
             tablaId++;
         }
+
         function quitarTablaBingo() {
             var tablasContainer = document.querySelectorAll(".tabla-container");
             if (tablasContainer.length > 1) {
@@ -83,14 +108,8 @@
             }
         }
 
-        // Marcar el número que sale
-        document.getElementById("marcarNumero").addEventListener("click", function() {
-            var numeroSalido = document.getElementById("numeroSalido").value;
-            marcarNumeroEnTablas(numeroSalido);
-        });
-
         function marcarNumeroEnTablas(numero) {
-            var tablas = document.querySelectorAll(".tabla-container table");
+            var tablas = document.querySelectorAll("table");
 
             for (var i = 0; i < tablas.length; i++) {
                 var celdas = tablas[i].querySelectorAll("input[type='text']");
@@ -100,11 +119,31 @@
                         celdas[j].classList.add("marcada");
                     }
                 }
+
+                for (var col = 0; col < 5; col++) {
+                    var columnaMarcada = true;
+                    for (var fila = 0; fila < 5; fila++) {
+                        var celda = celdas[fila * 5 + col];
+                        if (!celda.classList.contains("marcada")) {
+                            columnaMarcada = false;
+                            break;
+                        }
+                    }
+                    if (columnaMarcada) {
+                        alert("¡Columna completa marcada en la tabla " + (i + 1) + "!");
+                    }
+                }
             }
         }
+
+        document.getElementById("marcarNumero").addEventListener("click", function() {
+            var numeroSalido = document.getElementById("numeroSalido").value;
+            marcarNumeroEnTablas(numeroSalido);
+        });
 
         document.getElementById("agregarTabla").addEventListener("click", generarTablaBingo);
         document.getElementById("quitarTabla").addEventListener("click", quitarTablaBingo);
     </script>
 </body>
 </html>
+
